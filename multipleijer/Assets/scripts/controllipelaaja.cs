@@ -22,6 +22,8 @@ public class controllipelaaja : MonoBehaviour
     [SerializeField] private bool isGrounded;
     
     private Vector3 velocity;
+
+    private Vector3 moveDir;
     
         // Start is called before the first frame update
     void Start()
@@ -32,7 +34,8 @@ public class controllipelaaja : MonoBehaviour
      // Update is called once per frame
      void Update()
     {
-        CheckIfGrounded();  
+        CheckIfGrounded();
+        Mover();  
     }
     
     private void CheckIfGrounded()
@@ -50,5 +53,22 @@ public class controllipelaaja : MonoBehaviour
         Controller.Move(velocity * Time.deltaTime);
         
     }
-}
 
+    private void Mover()
+    {
+        float xAxis = Input.GetAxis("Horizontal");
+        float zAxis = Input.GetAxis("Vertical");
+
+        moveDir = transform.right * xAxis + transform.forward *zAxis;
+
+        float targetSpeed = Input.GetButton("Fire1") ? runSpeed : moveSpeed;
+
+        if(moveDir == Vector3.zero)
+        {
+         targetSpeed = 0;
+
+        }
+
+        Controller.Move(moveDir * targetSpeed * Time.deltaTime);
+    }
+}
