@@ -18,12 +18,19 @@ public class mouse : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Cursor.lockState = mode;
+        playerBody = gameObject.transform.parent;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        mouseX = Input.GetAxis("Mouse X") *mouseSensitivity * Time.deltaTime;
+        mouseY = Input.GetAxis("Mouse Y") *mouseSensitivity * Time.deltaTime;
+        xRotation -= mouseY;
+
+        xRotation = Mathf.Clamp(xRotation,minXangle,maxAngle);
+        transform.localRotation = Quaternion.Euler(xRotation, 0, 0);
+        playerBody.Rotate(Vector3.up * mouseX);
     }
 }
