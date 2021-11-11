@@ -8,7 +8,7 @@ public class controllipelaaja : MonoBehaviour
     CharacterController Controller;
     public float moveSpeed = 16f;
 
-    public float runSpeed = 99f;
+    public float runSpeed = 32f;
 
     public float jumpHeight = 3f;
 
@@ -18,6 +18,7 @@ public class controllipelaaja : MonoBehaviour
 
     public float groundDistance = 0.1f;
     public LayerMask groundMask;
+    public Animator animator;
 
     [SerializeField] private bool isGrounded;
     
@@ -35,13 +36,26 @@ public class controllipelaaja : MonoBehaviour
      void Update()
     {
         CheckIfGrounded();
-        Mover();  
+        Mover();
+        Jumpmoment();
     }
     
+    private void Jumpmoment()
+    {
+       if(Input.GetButtonDown("Jump") && isGrounded)
+       {
+          velocity.y = Mathf.Sqrt(jumpHeight * -2 * gravity);
+          
+       }
+       velocity.y += gravity * Time.deltaTime;
+       Controller.Move(velocity * Time.deltaTime);
+    }
+
+
     private void CheckIfGrounded()
     {
         isGrounded = Physics.CheckSphere(groundCheck.position,groundDistance,groundMask);
-
+        animator.SetBool("Ground",isGrounded);
         if(isGrounded)
         {
            velocity.y = -2;
@@ -53,7 +67,7 @@ public class controllipelaaja : MonoBehaviour
         Controller.Move(velocity * Time.deltaTime);
         
     }
-
+// Note that I have beaten Splatoon 2 Hero Mode
     private void Mover()
     {
         float xAxis = Input.GetAxis("Horizontal");
@@ -62,13 +76,14 @@ public class controllipelaaja : MonoBehaviour
         moveDir = transform.right * xAxis + transform.forward *zAxis;
 
         float targetSpeed = Input.GetButton("Fire1") ? runSpeed : moveSpeed;
-
+        
         if(moveDir == Vector3.zero)
         {
          targetSpeed = 0;
 
         }
-
+        // not the best way to do this but who gives a ****
+        animator.SetFloat("Speed",targetSpeed);
         Controller.Move(moveDir * targetSpeed * Time.deltaTime);
     }
 }
