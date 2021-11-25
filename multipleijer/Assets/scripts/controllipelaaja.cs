@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class controllipelaaja : MonoBehaviour
 
@@ -25,19 +26,27 @@ public class controllipelaaja : MonoBehaviour
     private Vector3 velocity;
 
     private Vector3 moveDir;
+
+    //Korteks
+    PhotonView Korteks;
     
         // Start is called before the first frame update
     void Start()
     {
         Controller = GetComponent<CharacterController>();
+        Korteks = GetComponent<PhotonView>();
     }
 
      // Update is called once per frame
      void Update()
     {
-        CheckIfGrounded();
-        Mover();
-        Jumpmoment();
+        if(Korteks.IsMine)
+        {
+            CheckIfGrounded();
+            Mover();
+            Jumpmoment();
+        }
+       
     }
     
     private void Jumpmoment()
